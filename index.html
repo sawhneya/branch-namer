@@ -1,140 +1,191 @@
 <html>
+	<head>
+		<title>Git Branch Namer</title>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
 
-<head>
-    <title>Git Branch Namer</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+		<link
+			rel="icon"
+			type="image"
+			href="https://cdn.iconscout.com/icon/free/png-512/git-branch-2336962-1982843.png?f=avif&w=256"
+		/>
 
-    <link rel="icon" type="image"
-        href="https://cdn.iconscout.com/icon/free/png-512/git-branch-2336962-1982843.png?f=avif&w=256">
-</head>
-<style>
-    #us+label {
-        color: blue;
-    }
+        <style>
+            #us + label {
+                color: blue;
+            }
+    
+            #bug + label {
+                color: brown;
+            }
+    
+            #hotfix + label {
+                color: red;
+            }
+    
+            body {
+                font-size: 20px;
+                font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+                    sans-serif;
+                text-align: center;
+            }
+    
+            textarea {
+                margin: 1em;
+                padding: 1rem;
+                border-radius: 3px;
+            }
+    
+            button {
+                padding: 0.5rem;
+                margin-top: 1em;
+            }
+    
+            #result {
+                display: flex !important;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+    
+            #result span {
+                background: url('https://cdn.iconscout.com/icon/free/png-512/git-branch-2336962-1982843.png?f=avif&w=256');
+                background-position: left - 10px;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-color: lightgray;
+                background-size: 20PX;
+                padding: 1rem;
+                border: 2px dashed grey;
+                border-radius: 5px;
+                cursor: copy;
+                min-width: 100px;
+                min-height: 1em;
+            }
+        </style>
+	</head>
+	<body>
+		<div id="app">
+			<div id="story-type">
+				<input
+					type="radio"
+					id="us"
+					value="feature/"
+					v-on:change="slugify"
+					v-model="storyType"
+				/>
+				<label for="us">User Story</label>
+				<input
+					type="radio"
+					id="bug"
+					value="bug/"
+					v-on:change="slugify"
+					v-model="storyType"
+				/>
+				<label for="bug">Bug</label>
+				<input
+					type="radio"
+					id="hotfix"
+					value="hotfix/"
+					v-on:change="slugify"
+					v-model="storyType"
+				/>
+				<label for="hotfix">Hot Fix</label>
+			</div>
+			<div>
+				<div>
+					<label for="maxChars"> Max Chars: </label>
+					<input
+						id="maxChars"
+						type="text"
+						v-model="maxChars"
+						v-on:keyup="slugify"
+						size="3"
+					/>
+				</div>
 
-    #bug+label {
-        color: brown;
-    }
+				<div>
+					<label for="slugCharacter"> Slug: </label>
+					<select id="slugCharacter" v-model="slugChar" v-on:change="slugify">
+						<option value="-">- (hyphen)</option>
+						<option value="_">_ (underscore)</option>
+					</select>
+				</div>
+			</div>
+			<v-textarea
+				ref="inputBox"
+				v-model="inputText"
+				:cols="maxChars < 128 ? maxChars : 128"
+				rows="1"
+				multiple="true"
+				placeholder="work item"
+				v-on:change="slugify"
+				v-on:keyup="slugify"
+				aria-label="Input"
+			/></v-textarea>
+			<div id="result">
+				<span @click="copyToClipboard">
+					{{ outputText }}</span
+				>
+				<button
+					v-on:click="copyToClipboard"
+					:disabled="this.copyText=='Copied!'"
+				>
+					{{copyText}}
+				</button>
+			</div>
+		</div>
 
-    #hotfix+label {
-        color: red;
-    }
-</style>
+		<script>
+			var app = new Vue({
+				el: "#app",
+				data: {
+					inputText: "",
+					outputText: "",
+					storyType: "feature/",
+					slugChar: "_",
+					maxChars: 80,
+					copyText: "Copy",
+				},
+				mounted() {
+					this.focusInput();
+				},
+				methods: {
+					focusInput() {
+						this.$refs.inputBox.focus();
+					},
+					slugify: function () {
+						var replaceAll = "[\\W" + this.slugChar + "]+";
+						var reAll = new RegExp(replaceAll, "g");
 
-<body>
+						var trimEnd = this.slugChar + "$";
+						var reTrim = new RegExp(trimEnd);
 
-    <div id="app">
+						var regEx = new RegExp();
+						let branchName =
+							this.storyType +
+							this.inputText
+								.replace(/['`"]+/g, "")
+								.replace(reAll, this.slugChar)
+								.substr(0, this.maxChars)
+								.replace(reTrim, "");
 
-        <div id="story-type">
-            <input type="radio" id="us" value="feature/" v-on:change="slugify" v-model="storyType">
-            <label for="us">User Story</label>
-            <input type="radio" id="bug" value="bug/" v-on:change="slugify" v-model="storyType">
-            <label for="bug">Bug</label>
-            <input type="radio" id="hotfix" value="hotfix/" v-on:change="slugify" v-model="storyType">
-            <label for="hotfix">Hot Fix</label>
-        </div>
-
-        <div>
-            Max Chars:
-            <input type="text" v-model="maxChars" v-on:keyup="slugify">
-        </div>
-
-        <div>
-            <label for="slugCharacter"> Slug character: </label>
-            <select id="slugCharacter" v-model="slugChar" v-on:change="slugify">
-                <option value="-">- (hyphen)</option>
-                <option value="_">_ (underscore)</option>
-            </select>
-        </div>
-        <textarea ref="inputBox" v-model="inputText" cols="100" rows="3" multiple="true" placeholder="enter title"
-            v-on:change="slugify" v-on:keyup="slugify" aria-label="Input"></textarea>
-        <br />
-        <div id="result">
-            <span>{{ outputText }}</span>
-            <button v-on:click="copyToClipboard">Copy!</button>
-        </div>
-
-    </div>
-
-    <script>
-
-        var app = new Vue({
-            el: "#app",
-            data: {
-                inputText: "",
-                outputText: "",
-                storyType: "feature/",
-                slugChar: "_",
-                maxChars: 80
-            },
-            mounted() {
-                this.focusInput();
-            },
-            methods: {
-                focusInput() {
-                    this.$refs.inputBox.focus();
-                },
-                slugify: function () {
-
-                    var replaceAll = "[\\W" + this.slugChar + "]+";
-                    var reAll = new RegExp(replaceAll, "g");
-
-                    var trimEnd = this.slugChar + '$';
-                    var reTrim = new RegExp(trimEnd);
-
-                    var regEx = new RegExp()
-                    let branchName =
-                        this.storyType +
-                        this.inputText
-                            .replace(/['`"]+/g, "")
-                            .replace(reAll, this.slugChar)
-                            .substr(0, this.maxChars)
-                            .replace(reTrim, "");
-
-                    this.outputText = branchName;
-                },
-                copyToClipboard: function () {
-                    navigator.clipboard
-                        .writeText(this.outputText)
-                        .then(() => {
-                            console.info("'" + this.outputText + "' copied to clipboard!");
-                        })
-                        .catch((err) => {
-                            console.error("Something went wrong", err);
-                        });
-                }
-            },
-        });
-
-    </script>
-</body>
-
-<style>
-    body {
-        font-size: 24px;
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        text-align: center;
-    }
-
-    textarea {
-        margin: 1em;
-        padding: 1rem;
-        border-radius: 3px;
-    }
-
-    button {
-        padding: .5rem;
-        display: block;
-    }
-
-    #result {
-        margin: 1rem;
-        padding: .5rem;
-        display: block;
-        border: 2px dashed grey;
-        border-radius: 5px;
-        text-align: center;
-    }
-</style>
+						this.outputText = branchName;
+						this.copyText = "Copy";
+					},
+					copyToClipboard: function () {
+						navigator.clipboard
+							.writeText(this.outputText)
+							.then(() => {
+								console.info("'" + this.outputText + "' copied to clipboard!");
+							})
+							.catch((err) => {
+								console.error("Something went wrong", err);
+							});
+						this.copyText = "Copied!";
+					},
+				},
+			});
+		</script>
+	</body>
 </html>
