@@ -3,70 +3,52 @@
 		<title>Git Branch Namer</title>
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-
+        <link rel="stylesheet" href="styles.css">
 		<link
 			rel="icon"
 			type="image"
 			href="https://cdn.iconscout.com/icon/free/png-512/git-branch-2336962-1982843.png?f=avif&w=256"
 		/>
-
-        <style>
-            #us + label {
-                color: blue;
-            }
-    
-            #bug + label {
-                color: brown;
-            }
-    
-            #hotfix + label {
-                color: red;
-            }
-    
-            body {
-                font-size: 20px;
-                font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
-                    sans-serif;
-                text-align: center;
-            }
-    
-            textarea {
-                margin: 1em;
-                padding: 1rem;
-                border-radius: 3px;
-            }
-    
-            button {
-                padding: 0.5rem;
-                margin-top: 1em;
-            }
-    
-            #result {
-                display: flex !important;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-            }
-    
-            #result span {
-                background: url('https://cdn.iconscout.com/icon/free/png-512/git-branch-2336962-1982843.png?f=avif&w=256');
-                background-position: left - 10px;
-                background-size: contain;
-                background-repeat: no-repeat;
-                background-color: lightgray;
-                background-size: 20PX;
-                padding: 1rem;
-                border: 2px dashed grey;
-                border-radius: 5px;
-                cursor: copy;
-                min-width: 100px;
-                min-height: 1em;
-            }
-        </style>
 	</head>
 	<body>
 		<div id="app">
-			<div id="story-type">
+
+            <h1>Branch Namer 2.0</h1>
+
+			<div id="options">
+				<span>
+					<label for="maxChars"> Max Chars: </label>
+					<input
+						id="maxChars"
+						type="text"
+						v-model="maxChars"
+						v-on:keyup="slugify"
+						size="3"
+					/>
+                </span>
+                <span>
+					<label for="slugCharacter"> Slug: </label>
+					<select id="slugCharacter" v-model="slugChar" v-on:change="slugify">
+						<option value="-">- (hyphen)</option>
+						<option value="_">_ (underscore)</option>
+					</select>
+				</span>
+			</div>
+
+
+			<v-textarea
+				ref="inputBox"
+				v-model="inputText"
+				:cols="maxChars < 128 ? maxChars : 128"
+				rows="1"
+				multiple="true"
+				placeholder="work item"
+				v-on:change="slugify"
+				v-on:keyup="slugify"
+				aria-label="Input"
+			/></v-textarea>
+
+            <div id="story-type">
 				<input
 					type="radio"
 					id="us"
@@ -92,37 +74,7 @@
 				/>
 				<label for="hotfix">Hot Fix</label>
 			</div>
-			<div>
-				<div>
-					<label for="maxChars"> Max Chars: </label>
-					<input
-						id="maxChars"
-						type="text"
-						v-model="maxChars"
-						v-on:keyup="slugify"
-						size="3"
-					/>
-				</div>
 
-				<div>
-					<label for="slugCharacter"> Slug: </label>
-					<select id="slugCharacter" v-model="slugChar" v-on:change="slugify">
-						<option value="-">- (hyphen)</option>
-						<option value="_">_ (underscore)</option>
-					</select>
-				</div>
-			</div>
-			<v-textarea
-				ref="inputBox"
-				v-model="inputText"
-				:cols="maxChars < 128 ? maxChars : 128"
-				rows="1"
-				multiple="true"
-				placeholder="work item"
-				v-on:change="slugify"
-				v-on:keyup="slugify"
-				aria-label="Input"
-			/></v-textarea>
 			<div id="result">
 				<span @click="copyToClipboard">
 					{{ outputText }}</span
