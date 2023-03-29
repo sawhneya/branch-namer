@@ -9,7 +9,7 @@ h1 {
 }
 
 #app {
-	margin-top: 5em;
+	margin-top: 5%;
 	vertical-align: middle;
 	height: 100%;
 }
@@ -35,25 +35,49 @@ textarea {
 	margin-bottom: 0.5em;
 }
 
-#story-type input,
 #story-type label {
 	cursor: pointer;
+	border-radius: 5px;
+	padding: 3px;
+	min-width: 5em;
+	display: inline-block;
+	text-align: center;
 }
 
 #story-type input {
-	margin-left: 1em;
+	visibility: hidden;
+	height: 0;
+	width: 0;
 }
 
 #us + label {
 	color: royalblue;
+	border: 1px royalblue solid;
+}
+
+#us:checked + label {
+	color: white;
+	background-color: royalblue;
 }
 
 #bug + label {
 	color: darkred;
+	border: 1px darkred solid;
+}
+
+#bug:checked + label {
+	color: white;
+	background-color: darkred;
 }
 
 #hotfix + label {
 	color: red;
+	border: 1px red solid;
+}
+
+#hotfix:checked + label {
+	color: white;
+	background-color: red;
 }
 
 button {
