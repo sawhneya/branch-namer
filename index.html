@@ -49,6 +49,14 @@
 			/></v-textarea>
             <div id="story-type">
 				<input
+				type="radio"
+				id="none"
+				value=""
+				v-on:change="slugify"
+				v-model="storyType"
+				/>
+				<label for="none">None</label>
+				<input
 					type="radio"
 					id="us"
 					value="feature/"

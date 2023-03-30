@@ -50,6 +50,16 @@ textarea {
 	width: 0;
 }
 
+#none + label {
+	color: darkgrey;
+	border: 1px darkgrey solid;
+}
+
+#none:checked + label {
+	color: white;
+	background-color: darkgrey;
+}
+
 #us + label {
 	color: royalblue;
 	border: 1px royalblue solid;
