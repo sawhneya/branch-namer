@@ -56,6 +56,15 @@
 				v-model="storyType"
 				/>
 				<label for="none">None</label>
+
+				<input
+				type="radio"
+				id="release"
+				value="release/"
+				v-on:change="slugify"
+				v-model="storyType"
+			/>
+			<label for="release">Release</label>
 				<input
 					type="radio"
 					id="us"
@@ -64,6 +73,8 @@
 					v-model="storyType"
 				/>
 				<label for="us">User Story</label>
+
+
 				<input
 					type="radio"
 					id="bug"

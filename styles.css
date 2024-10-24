@@ -70,6 +70,16 @@ textarea {
 	background-color: royalblue;
 }
 
+#release + label {
+	color: green;
+	border: 1px green solid;
+}
+
+#release:checked + label {
+	color: white;
+	background-color: green;
+}
+
 #bug + label {
 	color: darkred;
 	border: 1px darkred solid;
@@ -109,6 +119,7 @@ button {
 	background-repeat: no-repeat;
 	background-color: lightgray;
 	background-size: 20px;
+	font-family: "Courier New", Courier, monospace;
 	padding: 1rem;
 	border: 2px dashed grey;
 	border-radius: 5px;
