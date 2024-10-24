@@ -71,13 +71,13 @@ textarea {
 }
 
 #release + label {
-	color: green;
-	border: 1px green solid;
+	color: purple;
+	border: 1px purple solid;
 }
 
 #release:checked + label {
 	color: white;
-	background-color: green;
+	background-color: purple;
 }
 
 #bug + label {
